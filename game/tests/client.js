@@ -88,6 +88,21 @@ Tinytest.addAsync('GameController - refreshState', (test, complete) => {
 	// the flag must be set
 	Meteor.setTimeout(() => !executed && (timeout = true) && test.exception(new Error('state handler failed to execute within 1s')), 1000);
 });
+Tinytest.add('GameController - refreshState invalid or unknown state', test => {
+	GameController.setStates({ invalid: 1234 });
+
+	let game = GameController.create();
+	game.name = 'Test';
+	game.save();
+
+	// should not throw exceptions for unknown state
+	game.update({state: 'unknown'});
+	GameController.refreshState(game);
+
+	// should not throw exceptions for invalid state handlers
+	game.update({state: 'invalid'});
+	GameController.refreshState(game);
+});
 
 Tinytest.add('GameController - isReady no parameters', test => GameController.isReady());
 Tinytest.add('GameController - isReady', test => {
@@ -116,8 +131,4 @@ Tinytest.add('GameController - isReady', test => {
 
 Tinytest.add('GameSession - Is the GameSession available?', test => test.notEqual(typeof GameSession, 'undefined'));
 Tinytest.add('GameSession - Does GameSession.load return undefined if no active game?', test => test.isUndefined(GameSession.load()));
-
-
-Tinytest.add('Does ID generate?', test => test.isTrue(ID.generate()));
-
 

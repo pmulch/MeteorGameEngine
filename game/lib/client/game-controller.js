@@ -36,6 +36,8 @@ GameController = {
 	 * @param  {Game} game - the Game instance to reset
 	 */
 	reset: (game) => {
+		if (!(game instanceof Game)) return;
+
 		// mark each player as not ready
 		_(game.players).each(p => game.updatePlayer(p, { isReady: false }));
 
@@ -51,7 +53,7 @@ GameController = {
 	 * End the game and flag it as inactive
 	 * @param  {Game} game - the Game instance to end
 	 */
-	end: (game) => game.update({ active: false }),
+	end: (game) => game instanceof Game && game.update({ active: false }),
 
 
 	// Game state management
@@ -78,11 +80,14 @@ GameController = {
 	 * @param  {Game} game - the Game instance to be refreshed
 	 */
 	refreshState: (game) => {
+		if (!(game instanceof Game)) return;
+		
 		// find the game state key within the defined states
 		let stateFn = GameController.getState(game.state);
 
 		// attempt to execute the state handler function
-		stateFn(game);		// TODO: add better error handling here
+		if ( typeof stateFn === 'function' )
+			stateFn(game);		// TODO: add better error handling here
 	},
 
 	/**
