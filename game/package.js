@@ -16,12 +16,14 @@ Package.onUse(function(api) {
   api.use([
     'ecmascript', 
     'underscore',
-    'session'
+    'tracker',
+    'mongo'
   ]);
 
   // client
   api.use([
-    'u2622:persistent-session'
+    'session',
+    'u2622:persistent-session@0.4.4'
   ], ['client']);
 
 
@@ -51,8 +53,12 @@ Package.onUse(function(api) {
 });
 
 Package.onTest(function(api) {
-  // api.use('ecmascript');
-  // api.use('tinytest');
-  // api.use('pmulch:game');
-  // api.mainModule('game-tests.js');
+  api.use([
+    'ecmascript',
+    'tinytest',
+    'pmulch:game'
+  ]);
+  
+  api.addFiles('tests/client.js', 'client');
+  api.addFiles('tests/server.js', 'server');
 });
