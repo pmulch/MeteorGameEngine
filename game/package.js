@@ -14,29 +14,44 @@ Package.onUse(function(api) {
   // min version
   api.versionsFrom('1.4.1.1');
 
-  // dependencies
-  api.use(['ecmascript', 'underscore']);
 
+  // dependencies
+  // common
+  api.use([
+    'ecmascript', 
+    'underscore',
+    'session'
+  ]);
+
+  // client
+  api.use([
+    'u2622:persistent-session'
+  ], ['client']);
+
+
+  // source files
   // common
   api.addFiles([
-    'lib/utils.js', 
-    'lib/data.js'
-  ], ['client', 'server']);
+    'lib/common/utils.js', 
+    'lib/common/data.js'
+  ]);
 
   // server
   api.addFiles([
-    'lib/publish.js',
-    'lib/game-server.js'
+    'lib/server/publish.js',
+    'lib/server/game-server.js'
   ], ['server']);
 
   // client
   api.addFiles([
-    'lib/game-controller.js',
-    'lib/game-session.js'
+    'lib/client/game-controller.js',
+    'lib/client/game-session.js'
   ], ['client']);
 
+
   // exports
-  api.export(['GameSession', 'GameController', 'Games', 'Game'], ['client', 'server']);
+  api.export(['GameSession', 'GameController', 'Games', 'Game']);
+  api.imply('u2622:persistent-session');
 });
 
 Package.onTest(function(api) {
