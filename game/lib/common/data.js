@@ -38,7 +38,7 @@ Games = new Meteor.Collection('games', {
 _(Game.prototype).extend({
 	/**
 	 * Inserts 'this' Game into the Games collection. 
-	 * Throws an error if 'this._id' is already set, or if something goes wrong with the Games.insert call.
+	 * @throws {string} If 'this._id' is already set, or if something goes wrong with the Games.insert call.
 	 */
 	save: function() {
 		let self = this; 	// self is the document being insert (saved)
@@ -53,11 +53,15 @@ _(Game.prototype).extend({
 	/**
 	 * Updates 'this' Game within the Games collection with the specified changes. Automatically sets the 'modified' property to the current time.
 	 * @param  {object} changes - flat object containing the properties to be modified in both the local object and the underlying collection. This uses the { $set: ... } Mongo call.
+	 * @throws {string} If 'this._id' is not already set, or if something goes wrong with the Games.update call.
 	 */
 	update: function(changes) {
 		var self = this;	// self is the document being updated
 		
 		if ( !_.isObject(changes) ) return;		// no changes to be made
+
+		if ( !self._id )
+			throw `Cannot update item that does not have an id. Use the save function instead.`;
 		
 		// set the modified flag
 		_(changes).extend({
@@ -102,9 +106,9 @@ _(Game.prototype).extend({
 
 	/**
 	 * Updates the specified player object in 'this' Game with the specified changes.
-	 * Throws an error if player is not found.
 	 * @param  {object} player - the player object representing the player to be updated
 	 * @param  {object} changes - flat object containing the properties to be modified in both the local object and the underlying collection. This uses the { $set: ... } Mongo call.
+	 * @throws {string} If player is not found.
 	 */
 	updatePlayer: function(player, changes) {
 		var self = this,			// self is the Game instance being modified
@@ -127,7 +131,8 @@ _(Game.prototype).extend({
 			Games.update(self._id, { $set: parentChanges }, (err, num) => { if (err) throw err; });
 
 			// apply the changes locally
-			_.extend(player, changes);
+			_(player).extend(changes);
+			_(self).extend({ modified: now });
 		}
 		else {
 			// else player not found - throw error
@@ -144,21 +149,25 @@ _(Game.prototype).extend({
 		var self = this,			// self is the Game instance being modified
 			now = new Date();
 
-		// save changes to the database
-		Games.update(self._id, {
-			$set: { modified: now }, 
-			$pull: { players: player }
-		}, (err, num) => { if (err) throw err; });
-
-		// apply changes locally
-		self.modified = now;
+		// find the player locally
 		var index = _.indexOf(self.players, player);
 		if ( index >= 0 ) {
+		
+			// save changes to the database
+			Games.update(self._id, {
+				$set: { modified: now }, 
+				$pull: { players: player }
+			}, (err, num) => { if (err) throw err; });
+
+			// apply changes locally
+			self.modified = now;
 			self.players.splice(index, 1);
+			
+			// successfully removed
 			return true;
 		}
-
-		// otherwise removal failed
+		// else: player not found, removal failed
+		
 		return false;
 	}
 });

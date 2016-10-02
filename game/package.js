@@ -56,6 +56,7 @@ Package.onTest(function(api) {
   api.use([
     'ecmascript',
     'tinytest',
+    'underscore',
     'pmulch:game'
   ]);
   
