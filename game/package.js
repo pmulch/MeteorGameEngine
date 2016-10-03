@@ -48,8 +48,9 @@ Package.onUse(function(api) {
 
 
   // exports
-  api.export(['GameSession', 'GameController', 'Games', 'Game']);
-  api.imply('u2622:persistent-session');
+  api.export(['Games', 'Game']);
+  api.export(['GameSession', 'GameController'], 'client');
+  api.imply(['u2622:persistent-session'], 'client');
 });
 
 Package.onTest(function(api) {
