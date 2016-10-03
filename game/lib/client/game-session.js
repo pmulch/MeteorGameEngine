@@ -80,6 +80,32 @@ GameSession = {
 		Session.set('active.userId', null);
 	},
 
+	/**
+	 * Attempts to join a game with the specified accessCode. Calls the 'addPlayer' Meteor.Method internally.
+	 * If successful, saves the game session using GameSession.save
+	 * @async
+	 * @param  {string} accessCode - the access code for the game being joined
+	 * @param  {[type]} name       - the player's name
+	 * @return {Promise} which succeeds if the player joins successfully, or fails otherwise.
+	 *                         if successful, resolves with object { gameId: ..., playerId: ... } 
+	 *                         if failed, rejects with a Meteor.error object, with error key 'game-not-found'
+	 */
+	join: (accessCode, name) => new Promise((resolve, reject) => {
+		// request to join the game
+		Meteor.call('addPlayer', accessCode, name, (err, result) => {
+			if ( err ) {
+				// request failed
+				reject(err);
+			}
+			else {
+				// save the game session
+				GameSession.save(result.gameId, result.playerId);
+
+				// request succeeded
+				resolve(result);
+			}
+		});
+	}),
 
 	// useful query functions
 	/**
