@@ -90,6 +90,10 @@ _(Game.prototype).extend({
 		if (!(player._id))
 			player._id = ID.generate();
 
+		// set initial isReady state for the player (if needed)
+		if (!('isReady' in player))
+			player.isReady = false;
+
 		// save changes to the database
 		Games.update(self._id, {
 			$set: { modified: now }, 
