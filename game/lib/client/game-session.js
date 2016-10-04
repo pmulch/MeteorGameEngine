@@ -31,10 +31,29 @@ GameSession = {
 	},
 
 	/**
-	 * Restores the current active user based on the current active game as set in Session['active.gameId']
+	 * Finds the appropriate game and sets it as the active game via Session['active.gameId']. 
+	 * This should typically be called by the page after subscribing to the games collection, once loaded / reloaded. 
+	 * This process will trigger a restore of the game session if needed (based on a previous call to GameSession.save).
+	 * @param  {string} gameIdOrAccessCode - the id or access code of the game
+	 */
+	load: (gameIdOrAccessCode) => {
+		if ( !gameIdOrAccessCode ) return;
+		
+		// find the game
+		let game = Games.findOne({ $or: [{ _id: gameIdOrAccessCode }, { accessCode: gameIdOrAccessCode }] });
+		if ( game ) {
+			// we found one, so set it as active for this session
+			Session.set('active.gameId', game._id);			// this should trigger a restore of the session if need be
+		}
+		// else: no game found, do nothing
+	},
+
+	/**
+	 * Internal helper that restores the current active user based on the current active game as set in Session['active.gameId']
+	 * Shouldn't need to call this explicity for normal usage.
 	 * @return {String} the user ID associated with this user, or null/undefined if the user is not part of the game
 	 */
-	load: () => {
+	restore: () => {
 		// fetch the active game id
 		let gameId = Session.get('active.gameId');
 		if ( !gameId ) return;		// no active game
@@ -150,7 +169,7 @@ Meteor.startup(() => {
 	// reactively load the game session based on Session[active.gameId]
 	Tracker.autorun(() => {
 		Session.get('active.gameId');						// flag this as a dependency
-		Tracker.nonreactive(() => GameSession.load());		// flag the load process as non-reactive (don't want this triggering each time the game instance changes!)
+		Tracker.nonreactive(() => GameSession.restore());		// flag the load process as non-reactive (don't want this triggering each time the game instance changes!)
 	});
 
 	// reactively refresh the state of the active game

@@ -414,7 +414,6 @@
 // GameSession tests
 
 	Tinytest.add('GameSession - Is the GameSession available?', test => test.notEqual(typeof GameSession, 'undefined'));
-	Tinytest.add('GameSession - Does GameSession.load return undefined if no active game?', test => test.isUndefined(GameSession.load()));
 
 	// TODO...
 
