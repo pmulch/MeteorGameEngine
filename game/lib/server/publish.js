@@ -15,7 +15,7 @@ Meteor.publish('games', function(accessCodeOrId) {
 		return Games.find({ 
 			$or: [ 
 				{ _id: accessCodeOrId },
-				{ accessCode: accessCodeOrId }
+				{ accessCode: accessCodeOrId.toLowerCase() }		// ensure access code is lower-case (until we make this case-insensitive)
 			] 
 		});
 	}

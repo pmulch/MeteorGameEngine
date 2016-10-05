@@ -37,10 +37,10 @@ GameSession = {
 	 * @param  {string} gameIdOrAccessCode - the id or access code of the game
 	 */
 	load: (gameIdOrAccessCode) => {
-		if ( !gameIdOrAccessCode ) return;
+		if ( !_(gameIdOrAccessCode).isString() ) return;
 		
 		// find the game
-		let game = Games.findOne({ $or: [{ _id: gameIdOrAccessCode }, { accessCode: gameIdOrAccessCode }] });
+		let game = Games.findOne({ $or: [{ _id: gameIdOrAccessCode }, { accessCode: gameIdOrAccessCode.toLowerCase() }] });		// always compare access code in lower case (till we make this case insensitive)
 		if ( game ) {
 			// we found one, so set it as active for this session
 			Session.set('active.gameId', game._id);			// this should trigger a restore of the session if need be
