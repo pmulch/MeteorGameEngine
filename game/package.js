@@ -31,7 +31,6 @@ Package.onUse(function(api) {
   // source files
   // common
   api.addFiles([
-    'lib/common/utils.js', 
     'lib/common/data.js'
   ]);
 
