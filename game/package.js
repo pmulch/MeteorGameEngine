@@ -17,14 +17,14 @@ Package.onUse(function(api) {
     'ecmascript', 
     'underscore',
     'tracker',
-    'mongo'
+    'mongo',
+    'random'
   ]);
 
   // client
   api.use([
     'session',
-    'u2622:persistent-session@0.4.4',
-    'random'
+    'u2622:persistent-session@0.4.4'
   ], ['client']);
 
 
@@ -51,7 +51,9 @@ Package.onUse(function(api) {
   // exports
   api.export(['Games', 'Game']);
   api.export(['GameSession', 'GameController'], 'client');
-  api.imply(['u2622:persistent-session', 'random'], 'client');
+
+  api.imply(['random']);
+  api.imply(['u2622:persistent-session'], 'client');
 });
 
 Package.onTest(function(api) {
