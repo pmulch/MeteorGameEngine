@@ -29,9 +29,27 @@ GameController = {
 			host: { _id: Random.id() }	// will use this to uniquely identify the host machine
 		})).extend(overrides);
 	},
+
+	/**
+	 * Automatically generates a unique 4-character access code for the game instance provided and saves changes
+	 * @async
+	 * @param  {Game} game - the game instance to be modified
+	 * @return {Promise} which resolves with the game instance once complete, or rejects with an error if unexpectedly failed
+	 */
+	generateAccessCode: (game) => new Promise((resolve, reject) => {
+		if (!(game instanceof Game))
+			reject({ error: 'invalid-parameters', details: 'The game parameter was not a valid Game instance.' });
+
+		Meteor.call('getUniqueAccessCode', (err, result) => {
+			if ( err )
+				reject(err);
+			else {
+				// set the access code for the game, and resolve
+				game.update({ accessCode: result });
+				resolve(game);
 			}
 		});
-	},
+	}),
 
 	/**
 	 * Resets the game to the initial state (lobby)
