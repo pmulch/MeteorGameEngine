@@ -18,15 +18,17 @@ GameController = {
 	},
 
 	/**
-	 * Creates and returns a new game instance with default settings
+	 * Creates and returns a new game instance with default settings and specified overrides
+	 * @param {object} overrides - properties that should be overridden in the Game instance
 	 * @return {Game} new game instance with default settings
 	 */
-	create: () => {
-		return new Game({
+	create: (overrides) => {
+		return _(new Game({
 			state: 'lobby',
 			active: true,				// allow this game to be joined / resumed
-			host: {
-				_id: ID.generate()		// will use this to uniquely identify the host machine
+			host: { _id: Random.id() }	// will use this to uniquely identify the host machine
+		})).extend(overrides);
+	},
 			}
 		});
 	},

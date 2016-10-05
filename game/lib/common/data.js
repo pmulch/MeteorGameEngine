@@ -88,7 +88,7 @@ _(Game.prototype).extend({
 
 		// generate a unique player ID (if needed)
 		if (!(player._id))
-			player._id = ID.generate();
+			player._id = Random.id();
 
 		// set initial isReady state for the player (if needed)
 		if (!('isReady' in player))
