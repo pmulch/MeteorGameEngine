@@ -24,7 +24,7 @@ Package.onUse(function(api) {
   // client
   api.use([
     'session',
-    'u2622:persistent-session@0.4.4'
+    'cultofcoders:persistent-session@0.4.5'
   ], ['client']);
 
 
@@ -52,7 +52,7 @@ Package.onUse(function(api) {
   api.export(['GameSession', 'GameController'], 'client');
 
   api.imply(['random']);
-  api.imply(['u2622:persistent-session'], 'client');
+  api.imply(['cultofcoders:persistent-session'], 'client');
 });
 
 Package.onTest(function(api) {
