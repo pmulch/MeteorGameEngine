@@ -180,3 +180,5 @@ Meteor.startup(() => {
 
 });		
 
+// export variables
+export { GameSession };

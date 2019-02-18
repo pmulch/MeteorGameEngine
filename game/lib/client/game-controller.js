@@ -120,3 +120,5 @@ GameController = {
 	
 };
 
+// export variables
+export { GameController };

@@ -1,0 +1,11 @@
+<template name="game">
+	{{#if Template.subscriptionsReady}}
+		{{#if isAllowedIn}}
+			{{> Template.dynamic template=state data=data}}
+		{{else}}
+			{{> Template.dynamic template=error404Template}}
+		{{/if}}
+	{{else}}
+		{{> Template.dynamic template=loaderTemplate}}
+	{{/if}}
+</template>

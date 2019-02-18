@@ -24,6 +24,7 @@ Package.onUse(function(api) {
   // client
   api.use([
     'session',
+    'templating',
     'cultofcoders:persistent-session@0.4.5'
   ], ['client']);
 
@@ -37,13 +38,15 @@ Package.onUse(function(api) {
   // server
   api.addFiles([
     'lib/server/publish.js',
-    'lib/server/game-server.js'
+    'lib/server/game-server.js',
   ], ['server']);
 
   // client
   api.addFiles([
     'lib/client/game-controller.js',
-    'lib/client/game-session.js'
+    'lib/client/game-session.js',
+    'lib/client/game.html',
+    'lib/client/game.js'
   ], ['client']);
 
 
