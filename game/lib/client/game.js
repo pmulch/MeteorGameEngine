@@ -3,6 +3,7 @@
  */
 
 import { Template } from 'meteor/templating';
+import { _ } from 'meteor/underscore';
 import { GameSession } from './game-session';
 
 // local parameters
@@ -16,20 +17,20 @@ let options = {
 // requires 'gameId' parameter to be set on the template
 Template.game.onCreated(function() {
 	let self = this,
-		data = Template.currentData();
+		data = Template.currentData(),
+		gameId = data && _.isFunction(data.gameId) && data.gameId();
 
-	// set options
 	if ( data ) {
-		if (data.statePrefix) options.statePrefix = data.statePrefix;
-		if (data.error404Template) options.error404 = data.error404Template;
+		if (data.statePrefix) options.statePrefix = data.statePrefix();
+		if (data.error404Template) options.error404 = data.error404Template();
 	}
 
 	// run reactive code
 	self.autorun(() => 
 		self.subscribe(
 			'games', 								// subscribe to the 'games' collection
-			data.gameId,							// limit the subscription to the current gameId
-			() => GameSession.load(data.gameId)		// on success, load the game (needed in case of reloads)
+			gameId,									// limit the subscription to the current gameId
+			() => GameSession.load(gameId)			// on success, load the game (needed in case of reloads)
 		)
 	);
 });
